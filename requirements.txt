@@ -1,0 +1,4 @@
+# The application itself uses only the Python standard library on
+# purpose - zero runtime dependencies to install/patch/scan.
+# This file exists for dev/test tooling only.
+pytest>=8.0
