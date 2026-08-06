@@ -7,7 +7,6 @@ FROM build AS build_test
 WORKDIR /app
 COPY app/ ./app/
 COPY tests/ ./tests/
-RUN /venv/bin/pip install pytest
 ENTRYPOINT ["/venv/bin/pytest", "tests/", "-v"]
 
 FROM python:3.13-slim AS alternative_build
