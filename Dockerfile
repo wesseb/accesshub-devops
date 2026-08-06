@@ -3,14 +3,14 @@ WORKDIR /app
 COPY requirements.txt .
 RUN python -m venv --copies /venv && /venv/bin/pip install -r requirements.txt
 
-FROM build as build_test
+FROM build AS build_test
 WORKDIR /app
 COPY app/ ./app/
 COPY tests/ ./tests/
 RUN /venv/bin/pip install pytest
 ENTRYPOINT ["/venv/bin/pytest", "tests/", "-v"]
 
-FROM python:3.13-slim as alternative_build
+FROM python:3.13-slim AS alternative_build
 WORKDIR /app
 COPY --from=build venv /venv/
 COPY app/ ./app/
