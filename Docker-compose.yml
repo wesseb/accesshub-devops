@@ -6,7 +6,7 @@ services:
   app:
     build:
       context: .
-      target: runtime
+      target: runtime_distroless
     ports:
       - 8080:8080
     depends_on:
@@ -15,7 +15,7 @@ services:
   alterapp:
     build:
       context: .
-      target: alternative_build
+      target: runtime_slim
     ports:
       - 8081:8080
     depends_on:

@@ -1,17 +1,16 @@
-FROM python:3.13-slim AS venv-build
+FROM python:3.13-slim AS build-venv
 WORKDIR /app
-COPY requirements.txt .
 RUN python -m venv --copies /venv
 
-FROM python:3.13-slim AS alternative_build
+FROM python:3.13-slim AS runtime_slim
 WORKDIR /app
-COPY --from=venv-build venv /venv/
+COPY --from=build-venv venv /venv/
 COPY app/ ./app/
 CMD ["python3", "-m", "app.main"]
 
-FROM gcr.io/distroless/python3-debian13:latest AS runtime
+FROM gcr.io/distroless/python3-debian13:latest AS runtime_distroless
 WORKDIR /app
-COPY --from=venv-build /venv/lib/python3.13/site-packages /app/site-packages
+COPY --from=build-venv /venv/lib/python3.13/site-packages /app/site-packages
 COPY app/ ./app/
 ENV PYTHONPATH=/app/site-packages
 ENTRYPOINT ["python3", "-m", "app.main"]
