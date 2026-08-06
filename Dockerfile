@@ -10,6 +10,12 @@ COPY tests/ ./tests/
 RUN /venv/bin/pip install pytest
 ENTRYPOINT ["/venv/bin/pytest", "tests/", "-v"]
 
+FROM python:3.13-slim as alternative_build
+WORKDIR /app
+COPY --from=build venv /venv/
+COPY app/ ./app/
+CMD ["python3", "-m", "app.main"]
+
 FROM gcr.io/distroless/python3-debian13:latest AS runtime
 WORKDIR /app
 COPY --from=build /venv/lib/python3.13/site-packages /app/site-packages
