@@ -2,7 +2,7 @@ services:
   apptest:
     build:
       context: .
-      target: build_test
+      dockerfile: tests/Dockerfile
   app:
     build:
       context: .
