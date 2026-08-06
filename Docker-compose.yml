@@ -1,5 +1,14 @@
 services:
-  pythonwebapp:
-    build: .
-    ports: 
+  apptest:
+    build:
+      context: .
+      target: build_test
+  app:
+    build:
+      context: .
+      target: runtime
+    ports:
       - 8080:8080
+    depends_on:
+      apptest:
+        condition: service_completed_successfully
