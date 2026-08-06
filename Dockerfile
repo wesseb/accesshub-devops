@@ -8,7 +8,7 @@ COPY --from=build-venv venv /venv/
 COPY app/ ./app/
 CMD ["python3", "-m", "app.main"]
 
-FROM gcr.io/distroless/python3-debian13:latest AS runtime_distroless
+FROM gcr.io/distroless/python3-debian13:nonroot AS runtime_distroless
 WORKDIR /app
 COPY --from=build-venv /venv/lib/python3.13/site-packages /app/site-packages
 COPY app/ ./app/
