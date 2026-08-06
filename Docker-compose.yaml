@@ -1,0 +1,64 @@
+services:
+
+  test:
+    build:
+      context: .
+      dockerfile: tests/Dockerfile
+
+  postgreSQL:
+    image: postgres:trixie
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PWD}
+      - PGDATA=/data/db/18
+    ports:
+      - 5432:5432
+    volumes:
+      - dbData:/data/db/18
+    networks:
+      - accesshubNet
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  adminer:
+    image: adminer
+    ports:
+      - 8888:8080
+    networks:
+      - accesshubNet
+
+  app_distroless:
+    build:
+      context: .
+      target: runtime_distroless
+    ports:
+      - 8080:8080
+    networks:
+      - accesshubNet
+    depends_on:
+      test:
+        condition: service_completed_successfully
+      postgreSQL:
+        condition: service_healthy
+
+  app_slim:
+    build:
+      context: .
+      target: runtime_slim
+    ports:
+      - 8081:8080
+    networks:
+      - accesshubNet
+    depends_on:
+      test:
+        condition: service_completed_successfully
+
+networks:
+  accesshubNet:
+    driver: bridge
+
+volumes:
+  dbData:
